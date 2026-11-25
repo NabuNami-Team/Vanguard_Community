@@ -1,1 +1,434 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vanguard Online — Cardfight!! Community & Chat Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- QR Code Generator & Scanner -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom CSS File -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="relative overflow-x-hidden">
 
+  <!-- Background Decorations -->
+  <div class="fixed -top-40 -right-40 w-[500px] h-[500px] magic-circle pointer-events-none z-0"></div>
+  <div class="fixed -bottom-48 -left-48 w-[600px] h-[600px] magic-circle pointer-events-none z-0"></div>
+
+  <!-- ==================== AUTHENTICATION VIEW ==================== -->
+  <div id="auth-section" class="relative z-10 min-h-screen flex items-center justify-center p-4">
+    <div class="vg-card vg-gold-border rounded-2xl max-w-md w-full p-8">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sky-500/10 border border-sky-400/50 mb-3 shadow-[0_0_20px_rgba(56,189,248,0.4)]">
+          <i data-lucide="swords" class="w-8 h-8 text-amber-400"></i>
+        </div>
+        <h1 class="font-cyber text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-white to-amber-400">
+          VANGUARD ONLINE
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">STAND UP, MY VANGUARD! — COMMUNITY & CHAT PORTAL</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="grid grid-cols-2 gap-2 p-1 bg-slate-900/90 rounded-lg border border-slate-700/70 mb-6">
+        <button id="tab-login-btn" onclick="switchAuthTab('login')" class="py-2 text-sm font-semibold rounded-md bg-sky-600 text-white transition">เข้าสู่ระบบ</button>
+        <button id="tab-reg-btn" onclick="switchAuthTab('register')" class="py-2 text-sm font-semibold rounded-md text-slate-400 hover:text-white transition">สมัครสมาชิก</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-sky-300 mb-1">ชื่อผู้เล่น (Username) หรือ Gmail</label>
+          <input type="text" id="login-id" required placeholder="เช่น AichiSendou หรือ player@gmail.com"
+            class="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 focus:border-sky-400 focus:outline-none text-sm text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-sky-300 mb-1">รหัสผ่าน (Password)</label>
+          <input type="password" id="login-pass" required placeholder="••••••••"
+            class="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 focus:border-sky-400 focus:outline-none text-sm text-white">
+        </div>
+        <div class="p-3 rounded-lg bg-slate-900/95 border border-slate-700 flex items-center justify-between">
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" id="login-captcha" class="w-5 h-5 accent-sky-500 rounded cursor-pointer">
+            <span class="text-sm text-slate-200">ฉันไม่ใช่หุ่นยนต์ (I'm not a robot)</span>
+          </label>
+          <i data-lucide="shield-check" class="w-6 h-6 text-sky-400"></i>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 font-semibold text-white shadow-lg transition">
+          ลงชื่อเข้าใช้ (Login)
+        </button>
+        <p class="text-[11px] text-center text-slate-400 pt-2">
+          *บัญชี Admin: <span class="text-amber-400">admin</span> / รหัสผ่าน: <span class="text-amber-400">admin123</span>
+        </p>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs text-sky-300 mb-1">ชื่อผู้เล่น (Username)</label>
+          <input type="text" id="reg-user" required placeholder="ตั้งชื่อ Fighter ของคุณ"
+            class="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 focus:border-sky-400 focus:outline-none text-sm text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-sky-300 mb-1">อีเมล (Gmail)</label>
+          <input type="email" id="reg-email" required placeholder="example@gmail.com"
+            class="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 focus:border-sky-400 focus:outline-none text-sm text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-sky-300 mb-1">รหัสผ่าน (Password)</label>
+          <input type="password" id="reg-pass" required placeholder="ตั้งรหัสผ่าน"
+            class="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 focus:border-sky-400 focus:outline-none text-sm text-white">
+        </div>
+        <div class="p-3 rounded-lg bg-slate-900/95 border border-slate-700 flex items-center justify-between">
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" id="reg-captcha" class="w-5 h-5 accent-amber-500 rounded cursor-pointer">
+            <span class="text-sm text-slate-200">ฉันไม่ใช่หุ่นยนต์ (I'm not a robot)</span>
+          </label>
+          <i data-lucide="shield-check" class="w-6 h-6 text-amber-400"></i>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 font-semibold text-slate-950 shadow-lg transition">
+          สร้างบัญชี Fighter
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APPLICATION ==================== -->
+  <div id="app-section" class="relative z-10 hidden min-h-screen flex flex-col">
+    <header class="bg-slate-950/90 border-b border-sky-500/30 backdrop-blur-md sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-500 to-blue-700 flex items-center justify-center border border-amber-400/60 shadow">
+            <i data-lucide="flame" class="w-6 h-6 text-amber-300"></i>
+          </div>
+          <div>
+            <span class="font-cyber font-bold text-lg tracking-wider text-white">VANGUARD <span class="text-sky-400">ONLINE</span></span>
+            <span id="header-grade-badge" class="ml-2 text-xs px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/50 text-amber-300 font-semibold">Grade 0</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-right hidden sm:block">
+            <div id="header-username" class="text-sm font-semibold text-white">Player</div>
+            <div class="text-xs text-sky-400 font-cyber"><span id="header-points">0</span> PT</div>
+          </div>
+          <button onclick="logout()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-1.5 transition">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> ออกจากระบบ
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="max-w-7xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto">
+        <button onclick="switchPage('status')" id="nav-status" class="nav-btn active px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="user-check" class="w-4 h-4 text-sky-400"></i> สถานะผู้เล่น
+        </button>
+        <button onclick="switchPage('quests')" id="nav-quests" class="nav-btn px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="scroll-text" class="w-4 h-4 text-amber-400"></i> กระดานเควส
+        </button>
+        <button onclick="switchPage('create-quest')" id="nav-create-quest" class="nav-btn px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-400"></i> สร้างเควส
+        </button>
+        <button onclick="switchPage('battle')" id="nav-battle" class="nav-btn px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="qr-code" class="w-4 h-4 text-purple-400"></i> ต่อสู้ QR Code
+        </button>
+        <button onclick="switchPage('chat')" id="nav-chat" class="nav-btn px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="message-square" class="w-4 h-4 text-cyan-400"></i> ห้องแชท & กลุ่มคุย
+        </button>
+        <button onclick="switchPage('ranking')" id="nav-ranking" class="nav-btn px-4 py-2 rounded-lg border border-slate-700/80 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="trophy" class="w-4 h-4 text-yellow-400"></i> ตาราง Ranking
+        </button>
+        <button onclick="switchPage('admin')" id="nav-admin" class="nav-btn hidden px-4 py-2 rounded-lg border border-rose-500/60 bg-rose-950/30 text-rose-200 text-xs sm:text-sm font-medium flex items-center gap-2 whitespace-nowrap transition">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i> จัดการระบบ (Admin)
+        </button>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1">
+
+      <!-- 1. PLAYER STATUS -->
+      <section id="page-status" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="vg-card vg-gold-border rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="text-xs font-cyber tracking-widest text-sky-400 uppercase">FIGHTER LICENSE</span>
+                <span id="stat-grade-pill" class="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950">Grade 0</span>
+              </div>
+              <div class="my-5 relative rounded-xl overflow-hidden border border-sky-400/40 bg-gradient-to-b from-sky-900/40 via-slate-900 to-slate-950 p-5 text-center">
+                <div class="w-24 h-24 mx-auto rounded-full border-2 border-amber-400/80 bg-slate-900 flex items-center justify-center shadow-[0_0_25px_rgba(234,179,8,0.35)] mb-3">
+                  <i data-lucide="crown" class="w-12 h-12 text-amber-400"></i>
+                </div>
+                <h2 id="stat-username" class="text-xl font-bold text-white">Fighter Name</h2>
+                <p id="stat-grade-title" class="text-xs text-sky-300 mt-0.5">เกรดเริ่มต้น</p>
+              </div>
+            </div>
+            <div class="space-y-3 border-t border-slate-800 pt-4 text-sm">
+              <div class="flex justify-between"><span class="text-slate-400">แต้มสะสมปัจจุบัน:</span><span id="stat-points" class="font-cyber font-bold text-amber-400">0 PT</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">อันดับ Rank ล่าสุด:</span><span id="stat-rank" class="font-cyber font-bold text-sky-400">#1</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">โควตาสร้างเควสคงเหลือวันนี้:</span><span id="stat-quota" class="font-cyber font-bold text-emerald-400">250 / 250 PT</span></div>
+            </div>
+          </div>
+
+          <div class="vg-card rounded-2xl p-6 lg:col-span-2">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+              <i data-lucide="layers" class="w-5 h-5 text-sky-400"></i> ตารางระดับเกรดและสิทธิประโยชน์
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-slate-700 text-sky-300 text-xs uppercase">
+                    <th class="py-3 px-3">ระดับเกรด</th><th class="py-3 px-3">ตำแหน่ง</th><th class="py-3 px-3">เงื่อนไขแต้มสะสม</th><th class="py-3 px-3">โควตาสร้างเควสสูงสุด/วัน</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-slate-200">Grade 0</td><td>เกรดเริ่มต้น</td><td>0 Point</td><td class="py-2.5 px-3 text-emerald-400 font-semibold">250 Point/วัน</td></tr>
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-sky-300">Grade 1</td><td>ผู้เล่นระดับฝึกหัด</td><td>≥ 1,000 Point</td><td class="py-2.5 px-3 text-emerald-400 font-semibold">300 Point/วัน</td></tr>
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-blue-400">Grade 2</td><td>ผู้เล่นระดับปกติ</td><td>≥ 3,500 Point</td><td class="py-2.5 px-3 text-emerald-400 font-semibold">450 Point/วัน</td></tr>
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-purple-400">Grade 3</td><td>ผู้เล่นระดับสูง</td><td>≥ 7,500 Point</td><td class="py-2.5 px-3 text-emerald-400 font-semibold">600 Point/วัน</td></tr>
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-amber-400">Grade 4</td><td>ผู้เล่นระดับมือโปร</td><td>≥ 10,000 Point</td><td class="py-2.5 px-3 text-emerald-400 font-semibold">750 Point/วัน</td></tr>
+                  <tr><td class="py-2.5 px-3 font-cyber font-bold text-yellow-300">Grade Champion</td><td>แชมเปี้ยน</td><td>≥ 25,000 Point</td><td class="py-2.5 px-3 text-amber-400 font-bold">1,500 Point/วัน</td></tr>
+                  <tr class="bg-rose-950/20"><td class="py-2.5 px-3 font-cyber font-bold text-rose-400">Grade Admin</td><td class="text-rose-300">เกรดพิเศษ</td><td class="text-rose-300">แต่งตั้งพิเศษ</td><td class="text-rose-400 font-bold">ไม่จำกัด</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. QUEST BOARD -->
+      <section id="page-quests" class="hidden space-y-6">
+        <div class="vg-card rounded-2xl p-5">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="compass" class="w-5 h-5 text-amber-400"></i> กระดานเควส (Manual Quest Board)
+            </h2>
+            <button onclick="switchPage('create-quest')" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i> ลงประกาศเควสใหม่
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">ภูมิภาค</label>
+              <select id="filter-region" onchange="updateProvinceDropdown('filter-region', 'filter-province'); renderQuests();" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+                <option value="ALL">ทุกภูมิภาค</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">จังหวัด</label>
+              <select id="filter-province" onchange="renderQuests()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+                <option value="ALL">ทุกจังหวัด</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">แท็ก / ฟอร์แมต (7 รูปแบบ)</label>
+              <select id="filter-tag" onchange="renderQuests()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+                <option value="ALL">ทุกแท็กและฟอร์แมต</option>
+                <option value="Format D">Format D</option>
+                <option value="Format V(New)">Format V(New)</option>
+                <option value="Format G">Format G</option>
+                <option value="Format V(Old)">Format V(Old)</option>
+                <option value="Normal">Normal</option>
+                <option value="Fighter">Fighter</option>
+                <option value="Search">Search</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div id="quest-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+
+      <!-- 3. CREATE QUEST -->
+      <section id="page-create-quest" class="hidden max-w-2xl mx-auto">
+        <div class="vg-card vg-gold-border rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="pen-tool" class="w-5 h-5 text-emerald-400"></i> สร้างเควสด้วยตนเอง (100% Manual)
+            </h2>
+            <span id="create-quota-badge" class="text-xs px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">โควตาคงเหลือ: 250 PT</span>
+          </div>
+          <form onsubmit="handleCreateQuest(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs text-sky-300 mb-1">หัวข้อเควส</label>
+              <input type="text" id="q-title" required placeholder="เช่น หาเพื่อนเล่น Format D ร้านการ์ด" class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-sky-300 mb-1">แท็ก / ฟอร์แมต</label>
+                <select id="q-tag" required class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+                  <option value="Format D">Format D</option>
+                  <option value="Format V(New)">Format V(New)</option>
+                  <option value="Format G">Format G</option>
+                  <option value="Format V(Old)">Format V(Old)</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Fighter">Fighter</option>
+                  <option value="Search">Search</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-sky-300 mb-1">รางวัลแต้มเควส (Point)</label>
+                <input type="number" id="q-reward" min="10" required placeholder="ระบุตัวเลข Point" class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-sky-300 mb-1">ภูมิภาค</label>
+                <select id="q-region" required onchange="updateProvinceDropdown('q-region', 'q-province')" class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white"></select>
+              </div>
+              <div>
+                <label class="block text-xs text-sky-300 mb-1">จังหวัด</label>
+                <select id="q-province" required class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white"></select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs text-sky-300 mb-1">รายละเอียดและเงื่อนไขเควส</label>
+              <textarea id="q-desc" rows="4" required placeholder="ระบุรายละเอียดสถานที่ วันเวลา..." class="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white"></textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 font-semibold text-slate-950 shadow-lg transition">ประกาศเควสลงกระดาน</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- 4. QR BATTLE SYSTEM -->
+      <section id="page-battle" class="hidden space-y-6">
+        <div class="vg-card rounded-2xl p-4 border-purple-500/40 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <i data-lucide="swords" class="w-6 h-6 text-purple-400"></i>
+            <div class="text-xs sm:text-sm">
+              <span class="font-bold text-white">กติกาแต้ม:</span>
+              <span class="text-emerald-400 ml-2">ผู้ชนะ +3%</span> | <span class="text-rose-400 ml-1">ผู้แพ้ -2.5%</span>
+            </div>
+          </div>
+          <span class="text-xs text-slate-400">*ระบบยืนยันผล 2 ฝั่ง (Dual Confirmation)</span>
+        </div>
+
+        <div id="battle-lobby" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="vg-card rounded-2xl p-6 text-center">
+            <h3 class="text-base font-bold text-white mb-2">1. สร้าง QR Code เปิดห้องท้าดวล</h3>
+            <button onclick="createBattleRoom()" class="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-sm font-semibold text-white mb-4">สร้างห้องท้าดวล & QR Code</button>
+            <div id="qr-display-box" class="hidden flex-col items-center justify-center p-4 bg-white rounded-xl w-fit mx-auto"><div id="qrcode-canvas"></div></div>
+            <div id="battle-room-code-text" class="mt-3 text-xs font-cyber text-amber-400"></div>
+          </div>
+          <div class="vg-card rounded-2xl p-6 text-center">
+            <h3 class="text-base font-bold text-white mb-2">2. สแกน QR Code เข้าร่วมต่อสู้</h3>
+            <button onclick="startQrScanner()" class="px-5 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-sm font-semibold text-white mb-4">เปิดกล้องสแกน QR Code</button>
+            <div id="qr-reader" class="w-full max-w-xs mx-auto rounded-lg overflow-hidden mb-3"></div>
+            <div class="flex gap-2 max-w-xs mx-auto mt-2">
+              <input type="text" id="manual-room-input" placeholder="หรือรหัสห้อง" class="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white">
+              <button onclick="joinBattleByCode()" class="px-3 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs">เข้าร่วม</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="battle-active-panel" class="hidden vg-card vg-gold-border rounded-2xl p-8 max-w-xl mx-auto text-center">
+          <div class="inline-block px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400 text-amber-300 font-cyber text-xs mb-3 animate-pulse">STATUS: กำลังต่อสู้</div>
+          <h3 class="text-xl font-bold text-white mb-1">จับคู่การต่อสู้สำเร็จ!</h3>
+          <p id="battle-opponent-label" class="text-sm text-sky-300 mb-6">คู่แข่ง: -</p>
+          <div class="grid grid-cols-2 gap-4">
+            <button onclick="submitBattleResult('WIN')" class="py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 font-bold text-slate-950 shadow-lg">ฉันชนะ (VICTORY)</button>
+            <button onclick="submitBattleResult('LOSE')" class="py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 font-bold text-white shadow-lg">ฉันแพ้ (DEFEAT)</button>
+          </div>
+          <div id="dual-confirm-status" class="mt-5 text-xs text-amber-300"></div>
+        </div>
+      </section>
+
+      <!-- 5. CHAT & GROUP SYSTEM -->
+      <section id="page-chat" class="hidden space-y-6 max-w-4xl mx-auto">
+        <div class="vg-card rounded-2xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="message-square" class="w-5 h-5 text-cyan-400"></i> ห้องแชทและกลุ่มพูดคุยออนไลน์
+            </h2>
+            <button onclick="openCreateGroupModal()" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white">
+              + สร้างกลุ่มคุยใหม่
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-slate-400 mb-2">รายชื่อห้องแชท / กลุ่ม</div>
+              <div id="chat-group-list" class="space-y-1"></div>
+            </div>
+            <div class="md:col-span-2 bg-slate-900/90 rounded-xl p-4 border border-slate-800 flex flex-col justify-between h-[450px]">
+              <div class="border-b border-slate-800 pb-2 mb-3 flex justify-between items-center">
+                <span id="current-chat-room-name" class="text-sm font-bold text-sky-400"># ห้องรวมทั่วไป</span>
+                <span class="text-[11px] text-slate-400">ออนไลน์</span>
+              </div>
+              <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-3 text-xs"></div>
+              <form onsubmit="sendChatMessage(event)" class="flex gap-2">
+                <input type="text" id="chat-input-msg" required placeholder="พิมพ์ข้อความ..." class="flex-1 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-cyan-400">
+                <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs">ส่ง</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. MONTHLY RANKING -->
+      <section id="page-ranking" class="hidden space-y-6">
+        <div class="vg-card vg-gold-border rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="trophy" class="w-6 h-6 text-amber-400"></i> ตารางอันดับประจำเดือน (Monthly Ranking)
+            </h2>
+            <p id="ranking-month-label" class="text-sm text-sky-300 mt-1">รอบเดือนปัจจุบัน: -</p>
+          </div>
+          <div class="bg-slate-900/90 border border-sky-500/40 rounded-xl px-4 py-3 text-right">
+            <div class="text-[11px] text-slate-400">รีเซ็ตทุกวันที่ 1 ของเดือน</div>
+            <div id="ranking-countdown" class="font-cyber text-lg font-bold text-amber-400">00d 00h 00m 00s</div>
+          </div>
+        </div>
+        <div class="vg-card rounded-2xl p-6">
+          <h3 class="text-base font-bold text-white mb-4">อันดับ Fighter</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-slate-700 text-sky-300 text-xs uppercase">
+                  <th class="py-3 px-4">อันดับ</th><th class="py-3 px-4">ชื่อผู้เล่น</th><th class="py-3 px-4">เกรด</th><th class="py-3 px-4 text-right">คะแนน (Point)</th>
+                </tr>
+              </thead>
+              <tbody id="ranking-tbody" class="divide-y divide-slate-800"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="vg-card rounded-2xl p-5 border-rose-500/40 bg-rose-950/10">
+          <h3 class="text-sm font-bold text-rose-400 mb-3">🛡️ ผู้ดูแลระบบ (Grade Admin)</h3>
+          <div id="admin-list-box" class="flex flex-wrap gap-2"></div>
+        </div>
+      </section>
+
+      <!-- 7. ADMIN PANEL -->
+      <section id="page-admin" class="hidden space-y-6">
+        <div class="vg-card rounded-2xl p-6 border-rose-500/50">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-rose-400">ระบบจัดการสำหรับผู้ดูแลระบบ</h2>
+            </div>
+            <button onclick="adminResetRanking()" class="px-4 py-2 rounded-lg bg-rose-600 text-xs font-bold text-white">รีเซ็ตคะแนน Ranking</button>
+          </div>
+          <h3 class="text-sm font-bold text-white mb-3">จัดการสมาชิก</h3>
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead><tr class="border-b border-slate-700 text-slate-300"><th class="py-2 px-3">Username</th><th class="py-2 px-3">Gmail</th><th class="py-2 px-3">เกรด</th><th class="py-2 px-3">แต้ม</th><th class="py-2 px-3">จัดการ</th></tr></thead>
+              <tbody id="admin-users-tbody" class="divide-y divide-slate-800"></tbody>
+            </table>
+          </div>
+          <h3 class="text-sm font-bold text-white mb-3">จัดการเควส</h3>
+          <div id="admin-quests-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- เรียกใช้งานไฟล์ JavaScript ย่อย -->
+  <script src="app.js"></script>
+  <script src="battle.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

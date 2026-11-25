@@ -1,2 +1,2 @@
-# Vanguard_Comunity
-Vanguard Comunity
+# Vanguard_Community
+Vanguard Community

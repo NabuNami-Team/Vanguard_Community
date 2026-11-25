@@ -1,1 +1,51 @@
+body {
+  font-family: 'Prompt', sans-serif;
+  background-color: #050814;
+  color: #e2e8f0;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(234, 179, 8, 0.12) 0%, transparent 40%);
+  min-height: 100vh;
+}
 
+.font-cyber {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.vg-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(10, 15, 30, 0.96));
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.12), inset 0 0 15px rgba(56, 189, 248, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.vg-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #38bdf8, #eab308, #38bdf8, transparent);
+}
+
+.vg-gold-border {
+  border: 1px solid rgba(234, 179, 8, 0.6);
+  box-shadow: 0 0 25px rgba(234, 179, 8, 0.18);
+}
+
+.magic-circle {
+  border: 2px dashed rgba(56, 189, 248, 0.25);
+  border-radius: 50%;
+  animation: spinSlow 45s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.nav-btn.active {
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.25), rgba(234, 179, 8, 0.15));
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
